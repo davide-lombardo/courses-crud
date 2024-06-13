@@ -1,0 +1,499 @@
+openapi: 3.0.0
+info:
+  title: Courses CRUD - NodeJS
+  description: |-
+    This RESTful JSON API will manage the insertion of these courses.
+    Some useful links: 
+    - [GitHub Repository](https://github.com/davide-lombardo/courses-crud)
+  version: 1.0.0
+servers:
+  - url: https://s2i-node.onrender.com/
+  - url: http://localhost:3000/
+    description: Localhost development server
+tags:
+  - name: course
+    description: Everything about courses
+  - name: courseType
+    description: Everything about course types
+  - name: university
+    description: Everything about universities
+
+components:
+  schemas:
+    CourseType:
+      required:
+        - name
+      type: object
+      properties:
+        id:
+          type: string
+          example: 6328317757ae36961286b4bd
+        name:
+          type: string
+          example: CourseType about ...
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    Course:
+      required:
+        - name
+        - typeId
+        - universityId
+      type: object
+      properties:
+        id:
+          type: string
+          example: 6328317757ae36961286b4bc
+        name:
+          type: string
+          example: Course about ...
+        typeId:
+          type: string
+          example: 6328317757ae36961286b4bd
+        universityId:
+          type: string
+          example: 6328317757ae36961286b4be
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    University:
+      required:
+        - name
+      type: object
+      properties:
+        id:
+          type: string
+          example: 6328317757ae36961286b4be
+        name:
+          type: string
+          example: University of ...
+        courses:
+          type: array
+          items:
+            type: string
+            example: 6328317757ae36961286b4bc
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+  requestBodies:
+    CourseBody:
+      required:
+        - name
+        - typeId
+        - universityId
+      type: object
+      properties:
+        name:
+          type: string
+          example: INSERT NEW NAME
+        typeId:
+          type: string
+          example: 6328317757ae36961286b4bd
+        universityId:
+          type: string
+          example: 6328317757ae36961286b4be
+
+    CourseTypeBody:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+          example: INSERT NEW NAME
+
+    UniversityBody:
+      required:
+        - name
+      type: object
+      properties:
+        name:
+          type: string
+          example: INSERT NEW NAME
+        courses:
+          type: array
+          items:
+            type: string
+            example: 6328317757ae36961286b4bc
+
+paths:
+  /api/courses:
+    get:
+      tags:
+        - course
+      summary: Retrieves a list of Courses
+      description: Retrieves a list of courses as JSON objects.
+      operationId: courses_list
+      responses:
+        200:
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Course"
+        500:
+          description: Internal Server Error.
+
+    post:
+      tags:
+        - course
+      summary: Create a new course
+      description: Create a new course
+      operationId: course_create_post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/CourseBody"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/requestBodies/CourseBody"
+      responses:
+        201:
+          description: Course created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+        400:
+          description: Invalid Input Fields
+        500:
+          description: Internal Server Error
+
+  /api/courses/{id}:
+    get:
+      tags:
+        - course
+      summary: Retrieves Course by ID
+      description: Retrieves a single Course as JSON objects.
+      operationId: course_detail
+      parameters:
+        - name: id
+          in: path
+          description: Id of course to get
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+        500:
+          description: Internal Server Error.
+
+    patch:
+      tags:
+        - course
+      summary: Updates a specific Course
+      description: Updates a specific Course based on its id
+      operationId: course_update_patch
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id of course to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/CourseBody"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/requestBodies/CourseBody"
+      responses:
+        201:
+          description: Course updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+        400:
+          description: Invalid Input Fields
+        500:
+          description: Internal Server Error
+
+    delete:
+      tags:
+        - course
+      summary: Deletes a Course
+      description: Deletes a specific Course based on id
+      operationId: course_delete
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: id of course to delete
+          schema:
+            type: string
+      responses:
+        204:
+          description: Course deleted successfully
+        500:
+          description: Internal Server Error
+
+  /api/courseTypes:
+    get:
+      tags:
+        - courseType
+      summary: Retrieves a list of Course Types
+      description: Retrieves a list of course types as JSON objects.
+      operationId: courseTypes_list
+      responses:
+        200:
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CourseType"
+        500:
+          description: Internal Server Error.
+
+    post:
+      tags:
+        - courseType
+      summary: Create a new course type
+      description: Create a new course type
+      operationId: courseType_create_post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/CourseTypeBody"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/requestBodies/CourseTypeBody"
+      responses:
+        201:
+          description: Course type created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseType"
+        400:
+          description: Invalid Input Fields
+        500:
+          description: Internal Server Error
+
+  /api/courseTypes/{id}:
+    get:
+      tags:
+        - courseType
+      summary: Retrieves Course Type by ID
+      description: Retrieves a single Course Type as JSON objects.
+      operationId: courseType_detail
+      parameters:
+        - name: id
+          in: path
+          description: Id of course type to get
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseType"
+        500:
+          description: Internal Server Error.
+
+    patch:
+      tags:
+        - courseType
+      summary: Updates a specific Course Type
+      description: Updates a specific Course Type based on its id
+      operationId: courseType_update_patch
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id of course type to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/CourseTypeBody"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/requestBodies/CourseTypeBody"
+      responses:
+        201:
+          description: Course type updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CourseType"
+        400:
+          description: Invalid Input Fields
+        500:
+          description: Internal Server Error
+
+    delete:
+      tags:
+        - courseType
+      summary: Deletes a Course Type
+      description: Deletes a specific Course Type based on id
+      operationId: courseType_delete
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: id of course type to delete
+          schema:
+            type: string
+      responses:
+        204:
+          description: Course type deleted successfully
+        500:
+          description: Internal Server Error
+
+  /api/universities:
+    get:
+      tags:
+        - university
+      summary: Retrieves a list of Universities
+      description: Retrieves a list of universities as JSON objects.
+      operationId: universities_list
+      responses:
+        200:
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/University"
+        500:
+          description: Internal Server Error.
+
+    post:
+      tags:
+        - university
+      summary: Create a new university
+      description: Create a new university
+      operationId: university_create_post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/UniversityBody"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/requestBodies/UniversityBody"
+      responses:
+        201:
+          description: University created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/University"
+        400:
+          description: Invalid Input Fields
+        500:
+          description: Internal Server Error
+
+  /api/universities/{id}:
+    get:
+      tags:
+        - university
+      summary: Retrieves University by ID
+      description: Retrieves a single University as JSON objects.
+      operationId: university_detail
+      parameters:
+        - name: id
+          in: path
+          description: Id of university to get
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/University"
+        500:
+          description: Internal Server Error.
+
+    patch:
+      tags:
+        - university
+      summary: Updates a specific University
+      description: Updates a specific University based on its id
+      operationId: university_update_patch
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id of university to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/requestBodies/UniversityBody"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/requestBodies/UniversityBody"
+      responses:
+        201:
+          description: University updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/University"
+        400:
+          description: Invalid Input Fields
+        500:
+          description: Internal Server Error
+
+    delete:
+      tags:
+        - university
+      summary: Deletes a University
+      description: Deletes a specific University based on id
+      operationId: university_delete
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: id of university to delete
+          schema:
+            type: string
+      responses:
+        204:
+          description: University deleted successfully
+        500:
+          description: Internal Server Error
