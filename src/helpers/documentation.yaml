@@ -2,9 +2,11 @@ openapi: 3.0.0
 info:
   title: Courses CRUD - NodeJS
   description: |-
+     description: |-
     This RESTful JSON API will manage the insertion of these courses.
     Some useful links: 
     - [GitHub Repository](https://github.com/davide-lombardo/courses-crud)
+    - [Swagger Documentation](https://courses-crud.onrender.com/documentations)
   version: 1.0.0
 servers:
   - url: https://courses-crud.onrender.com/
